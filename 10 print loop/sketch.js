@@ -1,9 +1,9 @@
 let x = 0
 let y = 0
-let spacing = 25
+let spacing = window.innerWidth/20
 
 function setup() {
-    createCanvas(400, 400);
+    createCanvas(window.innerWidth, window.innerHeight);
     background(0);
     stroke(255)
 }
