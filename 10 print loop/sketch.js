@@ -1,12 +1,13 @@
-let x = 0
-let y = window.innerHeight
-let scale = 75
+let x 
+let y 
+let scale 
 let direction
 
 function setup() {
     createCanvas(window.innerWidth - 5, window.innerHeight - 5);
     background(0);
     stroke(255)
+    setScale();
     pickColor();
     pickDirection();
 }
@@ -82,6 +83,7 @@ function moveRight(){
 }
 
 function drawLine() {
+    if(random(1)>0.7){return}
     if(random(1)<0.5) {
         line(x, y, x + scale, y + scale);
     } else {
@@ -99,5 +101,13 @@ function pickDirection(){
     } else {
         y = 0
         x = 0
+    }
+}
+
+function setScale(){
+    if (window.innerWidth/35 > window.innerHeight/35){
+        scale = window.innerWidth/35
+    } else {
+        scale = window.innerHeight/35
     }
 }
