@@ -5,7 +5,7 @@ let direction
 
 function setup() {
     createCanvas(window.innerWidth - 5, window.innerHeight - 5);
-    background(0);
+    background(0, 0);
     stroke(255)
     setScale();
     pickColor();
@@ -111,7 +111,7 @@ function setScale(){
         scale = window.innerWidth/urlTest[1]
         return
     }
-    
+
     if (window.innerWidth/35 > window.innerHeight/35){
         scale = window.innerWidth/35
     } else {
