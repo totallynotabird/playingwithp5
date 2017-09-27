@@ -105,6 +105,13 @@ function pickDirection(){
 }
 
 function setScale(){
+    let urlTest = (window.location.href.match(/\?scale=(\d+)/))
+    
+    if (urlTest){
+        scale = window.innerWidth/urlTest[1]
+        return
+    }
+    
     if (window.innerWidth/35 > window.innerHeight/35){
         scale = window.innerWidth/35
     } else {
