@@ -1,6 +1,7 @@
 let x 
 let y 
 let scale 
+let speed
 let direction
 
 function setup() {
@@ -8,19 +9,28 @@ function setup() {
     background(0, 0);
     stroke(255)
     setScale();
+    setSpeed();
     pickColor();
     pickDirection();
 }
 
 function draw(){
     if (direction == "up"){
-        moveUp()
+        for (var index = 0; index < speed; index++) {
+            moveUp()
+        }
     } else if ( direction == "down"){
-        moveDown()
+        for (var index = 0; index < speed; index++) {
+            moveDown()
+        }
     } else if (direction == "left"){
-        moveLeft()
+        for (var index = 0; index < speed; index++) {
+            moveLeft()
+        }
     } else {
-        moveRight()
+        for (var index = 0; index < speed; index++) {
+            moveRight()
+        }
     }
 }
 
@@ -117,4 +127,9 @@ function setScale(){
     } else {
         scale = window.innerHeight/35
     }
+}
+
+function setSpeed(){
+    let urlTest = (window.location.href.match(/\?speed=(\d+)x/))
+    urlTest != null ? speed = urlTest[1] : speed = 1
 }
