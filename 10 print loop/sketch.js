@@ -45,7 +45,7 @@ function moveDown() {
 function moveUp(){
     drawLine()
     x -= scale
-    if (x <= 0){
+    if (x <= -scale){
         y -= scale
         x = window.innerWidth
         if (y <= -scale){
@@ -58,7 +58,7 @@ function moveUp(){
 function moveLeft(){
     drawLine()
     y -= scale
-    if (y <= 0){
+    if (y <= -scale){
         x -= scale
         y = window.innerHeight
         if (x <= - scale){
@@ -94,8 +94,8 @@ function pickDirection(){
     direction =  random(directions)
     console.log(direction)
     if (direction == "up"||direction == "left"){
-        y = Math.ceil((scale/window.innerHeight))*window.innerHeight
-        x = Math.ceil((scale/window.innerWidth))*window.innerWidth
+        y = Math.ceil((window.innerHeight/scale))*scale
+        x = Math.ceil((window.innerWidth/scale))*scale
     } else {
         y = 0
         x = 0
