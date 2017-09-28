@@ -115,7 +115,7 @@ function pickDirection(){
 }
 
 function setScale(){
-    let urlTest = (window.location.href.match(/\?scale=(\d+)/))
+    let urlTest = (window.location.href.match(/\#scale=(\d+)/))
     
     if (urlTest){
         scale = window.innerWidth/urlTest[1]
@@ -130,6 +130,6 @@ function setScale(){
 }
 
 function setSpeed(){
-    let urlTest = (window.location.href.match(/\?speed=(\d+)x/))
+    let urlTest = (window.location.href.match(/\#speed=(\d+)x/))
     urlTest != null ? speed = urlTest[1] : speed = 1
 }
