@@ -131,7 +131,7 @@ function restart() {
     document.getElementById("restartbutton").hidden = true
     clear();
     background(255);
-    grid = [];
+    tileList = [];
     createGrid();
     mineTiles = [];
     pickLocation(mineCount);
