@@ -29,6 +29,7 @@ function mousePressed(){
     mousePos.x = Math.floor(mouseX/scl)
     mousePos.y = Math.floor(mouseY/scl)
     let rev = mousePos.x + (mousePos.y * rows)
+    if(tileList[rev].flagged){return}
     console.log(`mouse grid pos: x : ${mousePos.x}, y : ${mousePos.y}`)
     for (var i = 0; i < mineTiles.length; i++) {
         var element = mineTiles[i];
