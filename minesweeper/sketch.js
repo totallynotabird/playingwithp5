@@ -1,12 +1,14 @@
 var canvas;
 var flags = 0;
 var correctFlags = 0;
+var gameOverState = false
 
-let tileList =[]
+let tileList = []
 let mineTiles = []
+let graceClick = true
 let scl
 let rows = 20
-let mineCount = rows*2
+let mineCount = 0.2 * rows * rows
 
 
 
@@ -21,23 +23,39 @@ function setup() {
 }
 
 function mousePressed(){
+    if(gameOverState){return}
     if (mouseX > width || mouseX < 0 || mouseY > height || mouseY < 0) {return}
     let mousePos = {}
     mousePos.x = Math.floor(mouseX/scl)
     mousePos.y = Math.floor(mouseY/scl)
+    let rev = mousePos.x + (mousePos.y * rows)
     console.log(`mouse grid pos: x : ${mousePos.x}, y : ${mousePos.y}`)
     for (var i = 0; i < mineTiles.length; i++) {
         var element = mineTiles[i];
         if(element.x == mousePos.x && element.y == mousePos.y){
+            if(graceClick){
+                removeMine(i, rev)
+                graceClick = false
+                for (var i = 0; i < tileList.length; i++) {
+                    checkNeighbors(tileList[i])
+                }
+            } else {
             gameOver();
             return
+            }
         } 
     }
-    let rev = mousePos.x + (mousePos.y * rows)
+    if (graceClick){
+        graceClick = false
+        for (var i = 0; i < tileList.length; i++) {
+            checkNeighbors(tileList[i])
+        }
+    }
     flipTile(rev)
 }
 
 function keyPressed(){
+    if(gameOverState){return}
     if(keyCode === 32){
         toggleFlag(mouseX, mouseY)
     }
@@ -76,10 +94,6 @@ function pickLocation(mines){
         }        
     }
     // showMines()
-    for (var i = 0; i < tileList.length; i++) {
-        checkNeighbors(tileList[i])
-    }
-
     if(mineTiles.length != mineCount){
         pickLocation(mineCount-mineTiles.length)
     }
@@ -92,7 +106,7 @@ function showMines(){
         var element = mineTiles[i];
         ellipse(element.x*scl + scl/2, element.y*scl + scl/2, 10)
     }
-    
+    stroke(0)
 }
 
 function checkNeighbors(input){
@@ -143,6 +157,7 @@ function checkNeighbors(input){
 }
 
 function gameOver() {
+    gameOverState = true
     showMines();
     if(confirm("Game Over!\nRestart?")) {
         restart();
@@ -152,14 +167,18 @@ function gameOver() {
 }
 
 function winner(){
-    if(confirm("You win!")) {
+    gameOverState = true
+    if(confirm("You win!\nRestart?")) {
         restart()
+    } else {
+        document.getElementById("restartbutton").hidden = false
     }
 }
 
 function restart() {
     flags = 0
     correctFlags = 0
+    graceClick = true
     document.getElementById("restartbutton").hidden = true
     clear();
     background(255);
@@ -167,7 +186,9 @@ function restart() {
     createGrid();
     mineTiles = [];
     pickLocation(mineCount);
+    gameOverState = false
 }
+
 function flipTile(rev){
     if (tileList[rev].flipped){return}
     fill(200,200,200)
@@ -177,16 +198,38 @@ function flipTile(rev){
     text(tileList[rev].neighbors,tileList[rev].x*scl + scl/2, tileList[rev].y*scl + scl/1.75)
     if(tileList[rev].flipped){return}
     tileList[rev].flipped = true
+
+    //floodfill
     if(tileList[rev].neighbors < 1){
         console.log("flood")
         if (tileList[rev].x != 0) {
             if (!tileList[rev - 1].flipped){
                 flipTile(rev - 1)
             }
+            if (tileList[rev].y != 0) {
+                if (!tileList[rev - (rows + 1)].flipped){
+                    flipTile(rev - (rows + 1))
+                }
+            }
+            if (tileList[rev].y != rows - 1) {
+                if (!tileList[rev + (rows - 1)].flipped){
+                    flipTile(rev + (rows - 1))
+                }
+            }
         }
         if (tileList[rev].x != rows - 1) {
             if (!tileList[rev + 1].flipped){
                 flipTile(rev + 1)
+            }
+            if (tileList[rev].y != 0) {
+                if (!tileList[rev - (rows - 1)].flipped){
+                    flipTile(rev - (rows - 1))
+                }
+            }
+            if (tileList[rev].y != rows - 1) {
+                if (!tileList[rev + (rows + 1)].flipped){
+                    flipTile(rev + (rows + 1))
+                }
             }
         }
         if (tileList[rev].y != 0) {
@@ -201,12 +244,13 @@ function flipTile(rev){
         }
     }
 }
+
 function toggleFlag(x, y){
     if (mouseX > width || mouseX < 0 || mouseY > height || mouseY < 0) {return}
     let tileData = findTile(x,y)
     let tileRev = tileData.x + (tileData.y * rows)
 
-    console.log(tileList[tileRev])
+    if(tileList[tileRev].flipped){return}
     if (tileList[tileRev].flagged) {
         tileList[tileRev].flagged = false
         removeFlag(tileData.x , tileData.y)
@@ -233,7 +277,13 @@ function drawFlag(x, y){
     rect(x * scl, y * scl, scl, scl)
 }
 
-function removeFlag(x,y){
+function removeFlag(x,y) {
     fill(255)
     rect(x * scl, y * scl, scl, scl)
 }
+
+function removeMine(mineTilesEntry,rev){
+    mineTiles.splice(mineTilesEntry, 1)
+    tileList[rev].mine = false
+}
+
